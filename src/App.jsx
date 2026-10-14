@@ -22,15 +22,27 @@ const emptyForm = {
 };
 
 const templates = [
-  { id: "simple", name: "Simple", description: "Clean and professional" },
-  { id: "modern", name: "Modern", description: "Fresh and organized" },
-  { id: "creative", name: "Creative", description: "Bold and expressive" },
+  {
+    id: "simple",
+    name: "Simple",
+    description: "Clean and professional",
+  },
+  {
+    id: "modern",
+    name: "Modern",
+    description: "Fresh and organized",
+  },
+  {
+    id: "creative",
+    name: "Creative",
+    description: "Colorful and expressive",
+  },
 ];
 
 function readPortfolios() {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
   } catch {
     return [];
   }
@@ -47,117 +59,110 @@ function PortfolioPreview({ item }) {
     .map((link) => link.trim())
     .filter(Boolean);
 
-  function safeUrl(link) {
-    return /^https?:\/\//i.test(link) ? link : `https://${link}`;
-  }
-
   return (
-    <article className={`portfolio-preview template-${item.template || "simple"}`}>
-      <header className="portfolio-preview-header">
+    <article className={`live-preview preview-${item.template || "simple"}`}>
+      <div className="preview-top">
         {item.profilePicture ? (
           <img
-            className="portfolio-profile-picture"
+            className="preview-avatar"
             src={item.profilePicture}
-            alt={`${item.name || "User"}'s profile`}
+            alt={item.name || "Profile"}
           />
         ) : (
-          <div className="portfolio-avatar">
-            {(item.name || "Y").trim().charAt(0).toUpperCase()}
+          <div className="preview-avatar preview-avatar-placeholder">
+            {item.name?.trim()?.charAt(0)?.toUpperCase() || "P"}
           </div>
         )}
 
-        <div className="portfolio-heading-text">
-          <p className="portfolio-kicker">MY PORTFOLIO</p>
-          <h2>{item.name || "Your Full Name"}</h2>
-          <p className="portfolio-job-title">
+        <div className="preview-heading">
+          <span className="preview-label">MY PORTFOLIO</span>
+          <h2>{item.name || "Your Name"}</h2>
+          <p className="preview-job-title">
             {item.title || "Your Professional Title"}
           </p>
+          {item.address && (
+            <p className="preview-location">{item.address}</p>
+          )}
         </div>
-      </header>
+      </div>
 
-      {item.address && (
-        <p className="portfolio-location">📍 {item.address}</p>
-      )}
+      <div className="preview-divider" />
 
-      <section className="portfolio-about">
+      <section className="preview-section">
         <h3>About Me</h3>
-        <p>{item.about || "Your introduction will appear here."}</p>
+        <p>{item.about || "Write something about yourself here."}</p>
       </section>
 
-      {skills.length > 0 && (
-        <section className="portfolio-skills">
-          <h3>Skills</h3>
-          <div className="skill-list">
+      <section className="preview-section">
+        <h3>Educational Background</h3>
+        <p>{item.education || "Add your educational background."}</p>
+      </section>
+
+      <section className="preview-section">
+        <h3>Skills</h3>
+        {skills.length ? (
+          <div className="preview-skills">
             {skills.map((skill, index) => (
-              <span className="skill-tag" key={`${skill}-${index}`}>
+              <span className="preview-skill" key={`${skill}-${index}`}>
                 {skill}
               </span>
             ))}
           </div>
-        </section>
-      )}
+        ) : (
+          <p>Add skills separated by commas.</p>
+        )}
+      </section>
 
-      {item.education && (
-        <section className="portfolio-sections">
-          <h3>Educational Background</h3>
-          <p>{item.education}</p>
-        </section>
-      )}
+      <section className="preview-section">
+        <h3>Projects</h3>
+        <p>{item.projects || "Your projects will appear here."}</p>
+      </section>
 
-      {item.projects && (
-        <section className="portfolio-sections">
-          <h3>Projects</h3>
-          <p>{item.projects}</p>
-        </section>
-      )}
+      <section className="preview-section">
+        <h3>Work Experience</h3>
+        <p>{item.experience || "Add your work experience."}</p>
+      </section>
 
-      {item.experience && (
-        <section className="portfolio-sections">
-          <h3>Work Experience</h3>
-          <p>{item.experience}</p>
-        </section>
-      )}
-
-      {item.email && (
-        <section className="portfolio-sections">
-          <h3>Email</h3>
-          <p>{item.email}</p>
-        </section>
-      )}
-
-      {item.contactNumber && (
-        <section className="portfolio-sections">
-          <h3>Contact Number</h3>
-          <p>{item.contactNumber}</p>
+      {(item.email || item.contactNumber) && (
+        <section className="preview-section">
+          <h3>Contact Information</h3>
+          {item.email && <p>Email: {item.email}</p>}
+          {item.contactNumber && <p>Contact: {item.contactNumber}</p>}
         </section>
       )}
 
       {links.length > 0 && (
-        <section className="portfolio-sections">
+        <section className="preview-section">
           <h3>Social Media / Website Links</h3>
-          <div className="portfolio-link-list">
-            {links.map((link, index) => (
-              <a
-                href={safeUrl(link)}
-                key={`${link}-${index}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {link}
-              </a>
-            ))}
-          </div>
+          <ul className="preview-links">
+            {links.map((link, index) => {
+              const href = /^https?:\/\//i.test(link)
+                ? link
+                : `https://${link}`;
+
+              return (
+                <li key={`${link}-${index}`}>
+                  <a href={href} target="_blank" rel="noreferrer">
+                    {link}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
         </section>
       )}
 
-      {(item.additionalInfo || []).filter(
-        (info) => info.heading?.trim() || info.content?.trim()
-      ).map((info, index) => (
-        <section className="portfolio-sections" key={index}>
-          <h3>{info.heading || "Additional Information"}</h3>
-          <p>{info.content}</p>
+      {item.additionalInfo?.length > 0 && (
+        <section className="preview-section">
+          <h3>Additional Information</h3>
+          {item.additionalInfo.map((info, index) => (
+            <div className="preview-extra" key={info.id || index}>
+              <strong>{info.title || "Additional Detail"}</strong>
+              <p>{info.content}</p>
+            </div>
+          ))}
         </section>
-      ))}
+      )}
     </article>
   );
 }
@@ -174,98 +179,88 @@ function App() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolios));
     } catch {
-      setNotice(
-        "Could not save. Your browser storage may be full. Try using a smaller profile picture."
-      );
+      setNotice("Storage is full. Try using a smaller profile picture.");
     }
   }, [portfolios]);
 
-  const selectedPortfolio = portfolios.find(
-    (portfolio) => portfolio.id === selectedId
-  );
+  const updateField = (field, value) => {
+    setForm((current) => ({ ...current, [field]: value }));
+  };
 
-  function updateField(event) {
-    const { name, value } = event.target;
-    setForm((current) => ({ ...current, [name]: value }));
-  }
-
-  function startCreating(template = "simple") {
+  const startCreating = (template = "simple") => {
     setForm({ ...emptyForm, template });
     setEditingId(null);
-    setSelectedId(null);
     setNotice("");
     setPage("create");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  };
 
-  function editPortfolio(portfolio) {
-    setForm({
-      ...emptyForm,
-      ...portfolio,
-      additionalInfo: portfolio.additionalInfo || [],
-    });
-    setEditingId(portfolio.id);
-    setSelectedId(null);
+  const editPortfolio = (item) => {
+    setForm({ ...emptyForm, ...item });
+    setEditingId(item.id);
     setNotice("");
     setPage("create");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  };
 
-  function handlePicture(event) {
+  const handlePicture = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setNotice("Please choose an image file.");
+      setNotice("Please select an image file.");
       event.target.value = "";
       return;
     }
 
     if (file.size > 1.5 * 1024 * 1024) {
-      setNotice("Please choose an image smaller than 1.5 MB.");
+      setNotice("Please choose a picture smaller than 1.5 MB.");
       event.target.value = "";
       return;
     }
 
     const reader = new FileReader();
+
     reader.onload = () => {
-      setForm((current) => ({
-        ...current,
-        profilePicture: String(reader.result || ""),
-      }));
+      updateField("profilePicture", reader.result);
       setNotice("");
     };
-    reader.onerror = () => setNotice("Unable to read this image.");
-    reader.readAsDataURL(file);
-  }
 
-  function addAdditionalInfo() {
+    reader.onerror = () => setNotice("Could not read that picture.");
+    reader.readAsDataURL(file);
+  };
+
+  const addAdditionalInfo = () => {
     setForm((current) => ({
       ...current,
       additionalInfo: [
-        ...current.additionalInfo,
-        { heading: "", content: "" },
+        ...(current.additionalInfo || []),
+        {
+          id: `${Date.now()}-${Math.random()}`,
+          title: "",
+          content: "",
+        },
       ],
     }));
-  }
+  };
 
-  function updateAdditionalInfo(index, field, value) {
+  const updateAdditionalInfo = (id, field, value) => {
     setForm((current) => ({
       ...current,
-      additionalInfo: current.additionalInfo.map((info, i) =>
-        i === index ? { ...info, [field]: value } : info
+      additionalInfo: current.additionalInfo.map((info) =>
+        info.id === id ? { ...info, [field]: value } : info
       ),
     }));
-  }
+  };
 
-  function removeAdditionalInfo(index) {
+  const removeAdditionalInfo = (id) => {
     setForm((current) => ({
       ...current,
-      additionalInfo: current.additionalInfo.filter((_, i) => i !== index),
+      additionalInfo: current.additionalInfo.filter(
+        (info) => info.id !== id
+      ),
     }));
-  }
+  };
 
-  function savePortfolio(event) {
+  const savePortfolio = (event) => {
     event.preventDefault();
 
     if (!form.name.trim() || !form.title.trim()) {
@@ -273,527 +268,626 @@ function App() {
       return;
     }
 
-    const now = new Date().toISOString();
-    const oldPortfolio = portfolios.find((item) => item.id === editingId);
-
-    const portfolio = {
+    const item = {
       ...form,
-      name: form.name.trim(),
-      title: form.title.trim(),
-      id: editingId || `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      createdAt: oldPortfolio?.createdAt || now,
-      updatedAt: now,
+      id: editingId || `${Date.now()}`,
+      updatedAt: new Date().toISOString(),
     };
 
-    const nextPortfolios = editingId
-      ? portfolios.map((item) => (item.id === editingId ? portfolio : item))
-      : [portfolio, ...portfolios];
+    setPortfolios((current) =>
+      editingId
+        ? current.map((portfolio) =>
+            portfolio.id === editingId ? item : portfolio
+          )
+        : [item, ...current]
+    );
 
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextPortfolios));
-      setPortfolios(nextPortfolios);
-      setSelectedId(portfolio.id);
-      setEditingId(null);
-      setNotice("Portfolio saved successfully!");
-      setPage("manage");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch {
-      setNotice(
-        "Unable to save. The profile picture may be too large, or browser storage may be full."
-      );
-    }
-  }
+    setSelectedId(item.id);
+    setEditingId(null);
+    setNotice("Portfolio saved successfully!");
+    setPage("manage");
+  };
 
-  function deletePortfolio(id) {
-    if (!window.confirm("Are you sure you want to delete this portfolio?")) {
-      return;
-    }
+  const deletePortfolio = (id) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this portfolio?"
+    );
 
-    const nextPortfolios = portfolios.filter((item) => item.id !== id);
+    if (!confirmed) return;
 
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextPortfolios));
-      setPortfolios(nextPortfolios);
-      setSelectedId(null);
-      setNotice("Portfolio deleted.");
-    } catch {
-      setNotice("Unable to update saved portfolios.");
-    }
-  }
+    setPortfolios((current) =>
+      current.filter((portfolio) => portfolio.id !== id)
+    );
 
-  function showManage() {
-    setSelectedId(null);
+    if (selectedId === id) setSelectedId(null);
+    setNotice("Portfolio deleted.");
+  };
+
+  const showManage = () => {
     setNotice("");
     setPage("manage");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  };
+
+  const selectedPortfolio =
+    portfolios.find((item) => item.id === selectedId) ||
+    portfolios[0] ||
+    null;
 
   return (
     <div className="app-shell">
-      <nav className="navbar">
-        <button className="brand" onClick={() => setPage("home")}>
-          <span className="brand-logo">P</span>
-          <span>
-            <span className="brand-purple">Portfolio</span>
-            <span className="brand-pink">Forge</span>
-          </span>
+      <header className="app-header">
+        <button
+          className="brand"
+          type="button"
+          onClick={() => setPage("home")}
+        >
+          <span className="brand-icon">P</span>
+          <span>PortfolioForge</span>
         </button>
 
-        <div className="nav-links">
+        <nav className="main-nav">
           <button
-            className={`nav-link ${page === "home" ? "active" : ""}`}
-            onClick={() => {
-              setPage("home");
-              setNotice("");
-            }}
+            className={page === "home" ? "nav-link active" : "nav-link"}
+            onClick={() => setPage("home")}
+            type="button"
           >
-            ⌂ Home
+            Home
           </button>
           <button
-            className={`nav-link ${page === "create" ? "active" : ""}`}
+            className={page === "create" ? "nav-link active" : "nav-link"}
             onClick={() => startCreating()}
+            type="button"
           >
-            ↗ Create
+            Create Portfolio
           </button>
           <button
-            className={`nav-link ${page === "manage" ? "active" : ""}`}
+            className={page === "manage" ? "nav-link active" : "nav-link"}
             onClick={showManage}
+            type="button"
           >
-            ▦ Manage
+            My Portfolios
           </button>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       {notice && (
         <div className="notice" role="status">
           <span>{notice}</span>
-          <button onClick={() => setNotice("")} aria-label="Dismiss">
+          <button
+            type="button"
+            aria-label="Dismiss message"
+            onClick={() => setNotice("")}
+          >
             ×
           </button>
         </div>
       )}
 
-      {page === "home" && (
-        <main>
-          <section className="hero">
-            <div className="hero-decoration flower flower-one">✿</div>
-            <div className="hero-decoration flower flower-two">✿</div>
-            <div className="hero-decoration sparkle sparkle-one">✦</div>
-            <div className="hero-decoration sparkle sparkle-two">✧</div>
-
-            <div className="hero-content">
-              <div className="hero-badge">
-                <span>✧</span> Three templates · Your story · Your style
-              </div>
-              <h1>
-                Build your portfolio,
-                <br />
-                <span>beautifully.</span>
-              </h1>
-              <p className="hero-description">
-                Bring your skills, education, projects, and experience
-                together in one beautiful portfolio. Choose your style and
-                make it yours.
+      <main className="page-content">
+        {page === "home" && (
+          <section className="home-page">
+            <div className="hero">
+              <span className="eyebrow">YOUR WORK. YOUR STORY.</span>
+              <h1>Build a portfolio that represents you.</h1>
+              <p>
+                Create a personal portfolio, add your information, choose a
+                design, and preview your work before saving it.
               </p>
-              <div className="hero-actions">
-                <button
-                  className="btn btn-primary"
-                  onClick={() => startCreating()}
-                >
-                  ↗ Create Portfolio
-                </button>
-                <button className="btn btn-outline" onClick={showManage}>
-                  ▦ Manage Portfolios
-                </button>
-              </div>
-              <div className="hero-trust">
-                <span>✦ Easy to use</span>
-                <span>♡ Three unique templates</span>
-                <span>✓ Editable anytime</span>
-              </div>
-            </div>
-          </section>
-
-          <section className="home-section">
-            <div className="section-heading">
-              <span className="eyebrow">YOUR STYLE, YOUR STORY</span>
-              <h2>Choose your look</h2>
-              <p>One set of information. Three beautiful designs.</p>
+              <button
+                className="primary-button"
+                type="button"
+                onClick={() => startCreating()}
+              >
+                Create My Portfolio
+              </button>
             </div>
 
-            <div className="template-gallery">
-              {templates.map((template, index) => (
-                <button
-                  key={template.id}
-                  className={`gallery-card template-${template.id}`}
-                  onClick={() => startCreating(template.id)}
-                >
-                  <div className="gallery-art">
-                    <div className="mini-window">
-                      <div className="mini-top"><i /><i /><i /></div>
-                      <div className="mini-content">
-                        <div className="mini-avatar" />
-                        <div className="mini-line mini-line-long" />
-                        <div className="mini-line mini-line-short" />
-                        <div className="mini-blocks"><i /><i /><i /></div>
-                      </div>
-                    </div>
-                    <span className="gallery-number">0{index + 1}</span>
-                  </div>
-                  <div className="gallery-info">
-                    <div>
-                      <h3>{template.name}</h3>
-                      <p>{template.description}</p>
-                    </div>
-                    <span className="gallery-arrow">↗</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          <section className="how-section">
-            <div className="section-heading">
-              <span className="eyebrow">THREE SIMPLE STEPS</span>
-              <h2>Your portfolio, made easy</h2>
-            </div>
-            <div className="steps-grid">
-              <div className="step-card">
-                <span className="step-icon step-pink">✎</span>
-                <h3>Add your details</h3>
-                <p>Enter your personal information, skills, and achievements.</p>
+            <section className="template-gallery">
+              <div className="section-heading centered">
+                <span className="eyebrow">CHOOSE YOUR STYLE</span>
+                <h2>Three simple templates</h2>
+                <p>Select a template to start building your portfolio.</p>
               </div>
-              <div className="step-card">
-                <span className="step-icon step-purple">✧</span>
-                <h3>Choose a template</h3>
-                <p>Preview three designs and choose your favorite.</p>
-              </div>
-              <div className="step-card">
-                <span className="step-icon step-blue">♡</span>
-                <h3>Save your work</h3>
-                <p>Save, edit, manage, and print your portfolio.</p>
-              </div>
-            </div>
-          </section>
-        </main>
-      )}
 
-      {page === "create" && (
-        <main className="page-content">
-          <div className="page-heading">
-            <span className="eyebrow">LET'S GET STARTED</span>
-            <h1>{editingId ? "Edit your portfolio" : "Create your portfolio"}</h1>
-            <p>Complete your details, choose a template, and preview the result.</p>
-          </div>
+              <div className="template-options home-template-options">
+                {templates.map((template) => (
+                  <button
+                    type="button"
+                    className="template-choice"
+                    key={template.id}
+                    onClick={() => startCreating(template.id)}
+                  >
+                    <TemplateThumbnail template={template.id} />
+                    <span className="template-name">{template.name}</span>
+                    <span className="template-description">
+                      {template.description}
+                    </span>
+                    <span className="template-select">Use template →</span>
+                  </button>
+                ))}
+              </div>
+            </section>
 
-          <form className="portfolio-form" onSubmit={savePortfolio}>
-            <section className="form-section">
-              <div className="form-section-heading">
-                <span className="form-icon">01</span>
-                <div>
-                  <h2>Portfolio Information</h2>
-                  <p>Fields marked * are required.</p>
+            <section className="how-it-works">
+              <div className="section-heading centered">
+                <span className="eyebrow">GET STARTED</span>
+                <h2>How it works</h2>
+              </div>
+              <div className="steps-grid">
+                <div className="step-card">
+                  <span className="step-number">01</span>
+                  <h3>Fill in your details</h3>
+                  <p>Add your profile, education, skills, and projects.</p>
+                </div>
+                <div className="step-card">
+                  <span className="step-number">02</span>
+                  <h3>Choose a design</h3>
+                  <p>Pick Simple, Modern, or Creative.</p>
+                </div>
+                <div className="step-card">
+                  <span className="step-number">03</span>
+                  <h3>Preview and save</h3>
+                  <p>Review your portfolio and save it for later.</p>
                 </div>
               </div>
+            </section>
+          </section>
+        )}
 
-              <div className="form-grid">
-                <label className="field">
-                  <span>Full Name *</span>
-                  <input name="name" value={form.name} onChange={updateField}
-                    placeholder="Enter your full name" required />
-                </label>
+        {page === "create" && (
+          <section className="create-page">
+            <div className="page-heading">
+              <div>
+                <span className="eyebrow">
+                  {editingId ? "UPDATE YOUR DETAILS" : "BUILD YOUR PROFILE"}
+                </span>
+                <h1>{editingId ? "Edit Portfolio" : "Create Your Portfolio"}</h1>
+                <p>Complete the form and see your changes in the live preview.</p>
+              </div>
+              <button className="secondary-button" onClick={showManage} type="button">
+                My Portfolios
+              </button>
+            </div>
 
-                <label className="field">
-                  <span>Professional Title *</span>
-                  <input name="title" value={form.title} onChange={updateField}
-                    placeholder="e.g. IT Student / Web Developer" required />
-                </label>
+            <div className="editor-layout">
+              <form className="portfolio-form" onSubmit={savePortfolio}>
+                <section className="form-section">
+                  <div className="form-section-heading">
+                    <span className="section-icon">01</span>
+                    <div>
+                      <h2>Portfolio Information</h2>
+                      <p>Enter your personal and professional details.</p>
+                    </div>
+                  </div>
 
-                <div className="field field-full">
-                  <span>Profile Picture</span>
-                  <div className="picture-upload">
-                    {form.profilePicture ? (
-                      <img src={form.profilePicture} alt="Profile preview" />
-                    ) : (
-                      <div className="picture-placeholder">♡</div>
-                    )}
-                    <div className="picture-upload-controls">
-                      <label className="btn btn-outline upload-button">
-                        Choose Image
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handlePicture}
-                          hidden
-                        />
-                      </label>
-                      <small>JPG, PNG, or another image format. Maximum 1.5 MB.</small>
-                      {form.profilePicture && (
+                  <div className="field">
+                    <label htmlFor="profilePicture">Profile Picture</label>
+                    <input
+                      id="profilePicture"
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePicture}
+                    />
+                    <small>Choose an image smaller than 1.5 MB.</small>
+                    {form.profilePicture && (
+                      <div className="upload-preview">
+                        <img src={form.profilePicture} alt="Selected profile" />
                         <button
                           type="button"
-                          className="text-button"
-                          onClick={() =>
-                            setForm((current) => ({ ...current, profilePicture: "" }))
-                          }
+                          className="text-button danger-text"
+                          onClick={() => updateField("profilePicture", "")}
                         >
                           Remove picture
                         </button>
-                      )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="form-grid">
+                    <div className="field">
+                      <label htmlFor="name">Full Name *</label>
+                      <input
+                        id="name"
+                        value={form.name}
+                        onChange={(e) => updateField("name", e.target.value)}
+                        placeholder="Enter your full name"
+                        required
+                      />
                     </div>
+
+                    <div className="field">
+                      <label htmlFor="title">Professional Title *</label>
+                      <input
+                        id="title"
+                        value={form.title}
+                        onChange={(e) => updateField("title", e.target.value)}
+                        placeholder="e.g. IT Student"
+                        required
+                      />
+                    </div>
+
+                    <div className="field">
+                      <label htmlFor="email">Email Address</label>
+                      <input
+                        id="email"
+                        type="email"
+                        value={form.email}
+                        onChange={(e) => updateField("email", e.target.value)}
+                        placeholder="you@example.com"
+                      />
+                    </div>
+
+                    <div className="field">
+                      <label htmlFor="contactNumber">Contact Number</label>
+                      <input
+                        id="contactNumber"
+                        type="tel"
+                        value={form.contactNumber}
+                        onChange={(e) =>
+                          updateField("contactNumber", e.target.value)
+                        }
+                        placeholder="Enter contact number"
+                      />
+                    </div>
+
+                    <div className="field field-full">
+                      <label htmlFor="address">Address</label>
+                      <input
+                        id="address"
+                        value={form.address}
+                        onChange={(e) => updateField("address", e.target.value)}
+                        placeholder="City or complete address"
+                      />
+                    </div>
+
+                    <div className="field field-full">
+                      <label htmlFor="about">About Me</label>
+                      <textarea
+                        id="about"
+                        rows="4"
+                        value={form.about}
+                        onChange={(e) => updateField("about", e.target.value)}
+                        placeholder="Write a short introduction about yourself..."
+                      />
+                    </div>
+
+                    <div className="field field-full">
+                      <label htmlFor="education">Educational Background</label>
+                      <textarea
+                        id="education"
+                        rows="3"
+                        value={form.education}
+                        onChange={(e) =>
+                          updateField("education", e.target.value)
+                        }
+                        placeholder="School, course, and year level"
+                      />
+                    </div>
+
+                    <div className="field field-full">
+                      <label htmlFor="skills">Skills</label>
+                      <input
+                        id="skills"
+                        value={form.skills}
+                        onChange={(e) => updateField("skills", e.target.value)}
+                        placeholder="HTML, CSS, Communication"
+                      />
+                      <small>Separate each skill with a comma.</small>
+                    </div>
+
+                    <div className="field field-full">
+                      <label htmlFor="projects">Projects</label>
+                      <textarea
+                        id="projects"
+                        rows="3"
+                        value={form.projects}
+                        onChange={(e) =>
+                          updateField("projects", e.target.value)
+                        }
+                        placeholder="Describe your projects..."
+                      />
+                    </div>
+
+                    <div className="field field-full">
+                      <label htmlFor="experience">Work Experience</label>
+                      <textarea
+                        id="experience"
+                        rows="3"
+                        value={form.experience}
+                        onChange={(e) =>
+                          updateField("experience", e.target.value)
+                        }
+                        placeholder="Describe your work experience, internship, or relevant activities..."
+                      />
+                    </div>
+
+                    <div className="field field-full">
+                      <label htmlFor="links">Social Media / Website Links</label>
+                      <textarea
+                        id="links"
+                        rows="3"
+                        value={form.links}
+                        onChange={(e) => updateField("links", e.target.value)}
+                        placeholder={"https://github.com/yourname\nhttps://linkedin.com/in/yourname"}
+                      />
+                      <small>Put each link on a new line.</small>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="form-section">
+                  <div className="form-section-heading">
+                    <span className="section-icon">02</span>
+                    <div>
+                      <h2>Additional Information</h2>
+                      <p>Add certifications, achievements, or other details.</p>
+                    </div>
+                  </div>
+
+                  <div className="additional-list">
+                    {(form.additionalInfo || []).map((info) => (
+                      <div className="additional-item" key={info.id}>
+                        <div className="field">
+                          <label>Title</label>
+                          <input
+                            value={info.title}
+                            onChange={(e) =>
+                              updateAdditionalInfo(
+                                info.id,
+                                "title",
+                                e.target.value
+                              )
+                            }
+                            placeholder="e.g. Certification"
+                          />
+                        </div>
+                        <div className="field">
+                          <label>Details</label>
+                          <textarea
+                            rows="2"
+                            value={info.content}
+                            onChange={(e) =>
+                              updateAdditionalInfo(
+                                info.id,
+                                "content",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Enter details"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          className="text-button danger-text"
+                          onClick={() => removeAdditionalInfo(info.id)}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    className="secondary-button"
+                    type="button"
+                    onClick={addAdditionalInfo}
+                  >
+                    + Add Information
+                  </button>
+                </section>
+
+                <section className="form-section">
+                  <div className="form-section-heading">
+                    <span className="section-icon">03</span>
+                    <div>
+                      <h2>Choose Your Template</h2>
+                      <p>Select a design for your portfolio.</p>
+                    </div>
+                  </div>
+
+                  <div className="template-options">
+                    {templates.map((template) => (
+                      <button
+                        type="button"
+                        key={template.id}
+                        className={
+                          form.template === template.id
+                            ? "template-choice selected"
+                            : "template-choice"
+                        }
+                        onClick={() => updateField("template", template.id)}
+                      >
+                        <TemplateThumbnail template={template.id} />
+                        <span className="template-name">{template.name}</span>
+                        <span className="template-description">
+                          {template.description}
+                        </span>
+                        {form.template === template.id && (
+                          <span className="selected-label">✓ Selected</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </section>
+
+                <div className="form-actions">
+                  <button className="primary-button" type="submit">
+                    {editingId ? "Update Portfolio" : "Save Portfolio"}
+                  </button>
+                  <button
+                    className="secondary-button"
+                    type="button"
+                    onClick={showManage}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+
+              <aside className="preview-panel">
+                <div className="preview-panel-heading">
+                  <div>
+                    <span className="eyebrow">LIVE PREVIEW</span>
+                    <h2>Your Portfolio</h2>
+                  </div>
+                  <span className="live-indicator">● Live</span>
+                </div>
+                <p className="preview-help">
+                  Changes appear here as you fill out the form.
+                </p>
+                <PortfolioPreview item={form} />
+              </aside>
+            </div>
+          </section>
+        )}
+
+        {page === "manage" && (
+          <section className="manage-page">
+            <div className="page-heading">
+              <div>
+                <span className="eyebrow">YOUR WORKSPACE</span>
+                <h1>My Portfolios</h1>
+                <p>View, edit, print, or delete your saved portfolios.</p>
+              </div>
+              <button
+                className="primary-button"
+                type="button"
+                onClick={() => startCreating()}
+              >
+                + Create New
+              </button>
+            </div>
+
+            {portfolios.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon">✦</div>
+                <h2>No portfolios yet</h2>
+                <p>Create your first portfolio to see it here.</p>
+                <button
+                  className="primary-button"
+                  type="button"
+                  onClick={() => startCreating()}
+                >
+                  Create Portfolio
+                </button>
+              </div>
+            ) : (
+              <div className="manage-layout">
+                <div className="saved-list">
+                  <div className="manage-summary">
+                    <strong>{portfolios.length} portfolio(s)</strong>
+                    <span>Saved in this browser</span>
+                  </div>
+
+                  <div className="saved-grid">
+                    {portfolios.map((item) => (
+                      <article
+                        className={
+                          selectedPortfolio?.id === item.id
+                            ? "saved-card selected"
+                            : "saved-card"
+                        }
+                        key={item.id}
+                      >
+                        <button
+                          type="button"
+                          className="saved-card-select"
+                          onClick={() => setSelectedId(item.id)}
+                        >
+                          {item.profilePicture ? (
+                            <img
+                              className="saved-avatar"
+                              src={item.profilePicture}
+                              alt=""
+                            />
+                          ) : (
+                            <span className="saved-avatar saved-avatar-empty">
+                              {item.name?.charAt(0)?.toUpperCase() || "P"}
+                            </span>
+                          )}
+                          <span className="saved-card-text">
+                            <strong>{item.name}</strong>
+                            <span>{item.title}</span>
+                            <small>
+                              {templates.find(
+                                (template) => template.id === item.template
+                              )?.name || "Simple"}{" "}
+                              template
+                            </small>
+                          </span>
+                        </button>
+
+                        <div className="saved-card-actions">
+                          <button
+                            type="button"
+                            className="text-button"
+                            onClick={() => editPortfolio(item)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="text-button danger-text"
+                            onClick={() => deletePortfolio(item.id)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </article>
+                    ))}
                   </div>
                 </div>
 
-                <label className="field">
-                  <span>Email</span>
-                  <input type="email" name="email" value={form.email}
-                    onChange={updateField} placeholder="you@example.com" />
-                </label>
-
-                <label className="field">
-                  <span>Contact Number</span>
-                  <input type="tel" name="contactNumber" value={form.contactNumber}
-                    onChange={updateField} placeholder="Enter contact number" />
-                </label>
-
-                <label className="field field-full">
-                  <span>Address</span>
-                  <input name="address" value={form.address} onChange={updateField}
-                    placeholder="City, province, or address" />
-                </label>
-
-                <label className="field field-full">
-                  <span>About Me</span>
-                  <textarea name="about" value={form.about} onChange={updateField}
-                    rows="4" placeholder="Introduce yourself and describe your goals..." />
-                </label>
-
-                <label className="field field-full">
-                  <span>Educational Background</span>
-                  <textarea name="education" value={form.education}
-                    onChange={updateField} rows="3"
-                    placeholder="School, course, achievements, and graduation year..." />
-                </label>
-
-                <label className="field field-full">
-                  <span>Skills</span>
-                  <input name="skills" value={form.skills} onChange={updateField}
-                    placeholder="Java, HTML, CSS, teamwork" />
-                  <small>Separate each skill with a comma.</small>
-                </label>
-
-                <label className="field field-full">
-                  <span>Projects</span>
-                  <textarea name="projects" value={form.projects}
-                    onChange={updateField} rows="4"
-                    placeholder="Describe your projects, your role, and the tools you used..." />
-                </label>
-
-                <label className="field field-full">
-                  <span>Work Experience</span>
-                  <textarea name="experience" value={form.experience}
-                    onChange={updateField} rows="4"
-                    placeholder="Jobs, internships, volunteer work, or relevant experience..." />
-                </label>
-
-                <label className="field field-full">
-                  <span>Social Media / Website Links</span>
-                  <textarea name="links" value={form.links} onChange={updateField}
-                    rows="3" placeholder={"Enter one link per line, e.g.\nhttps://github.com/username\nhttps://linkedin.com/in/username"} />
-                  <small>Include your website, GitHub, LinkedIn, or other relevant profiles.</small>
-                </label>
-              </div>
-            </section>
-
-            <section className="form-section">
-              <div className="form-section-heading">
-                <span className="form-icon">02</span>
-                <div>
-                  <h2>Additional Information</h2>
-                  <p>Add other sections if needed, such as awards or certifications.</p>
-                </div>
-              </div>
-
-              {form.additionalInfo.map((info, index) => (
-                <div className="additional-info-item" key={index}>
-                  <label className="field">
-                    <span>Section Title</span>
-                    <input value={info.heading}
-                      onChange={(event) =>
-                        updateAdditionalInfo(index, "heading", event.target.value)
-                      }
-                      placeholder="e.g. Certifications, Awards, Languages" />
-                  </label>
-                  <label className="field">
-                    <span>Details</span>
-                    <textarea value={info.content} rows="3"
-                      onChange={(event) =>
-                        updateAdditionalInfo(index, "content", event.target.value)
-                      }
-                      placeholder="Enter details for this section..." />
-                  </label>
-                  <button type="button" className="text-button remove-info"
-                    onClick={() => removeAdditionalInfo(index)}>
-                    Remove section ×
-                  </button>
-                </div>
-              ))}
-
-              <button type="button" className="btn btn-outline"
-                onClick={addAdditionalInfo}>
-                + Add Additional Information
-              </button>
-            </section>
-
-            <section className="form-section">
-              <div className="form-section-heading">
-                <span className="form-icon">03</span>
-                <div>
-                  <h2>Choose Your Template</h2>
-                  <p>Select a design to update your preview instantly.</p>
-                </div>
-              </div>
-
-              <div className="template-options">
-                {templates.map((template) => (
-                  <button type="button" key={template.id}
-                    className={`template-choice template-${template.id} ${
-                      form.template === template.id ? "selected" : ""
-                    }`}
-                    onClick={() =>
-                      setForm((current) => ({ ...current, template: template.id }))
-                    }
-                    aria-pressed={form.template === template.id}>
-                    <div className="template-thumb">
-                      <div className="thumb-header">
-                        <span className="thumb-avatar" />
-                        <span className="thumb-lines"><i /><i /></span>
-                      </div>
-                      <div className="thumb-content"><i /><i /><i /></div>
-                      <div className="thumb-footer"><i /><i /><i /></div>
-                    </div>
-                    <div className="template-choice-info">
-                      <span className="template-name">{template.name}</span>
-                      <span className="template-description">{template.description}</span>
-                    </div>
-                    <span className="template-check">
-                      {form.template === template.id ? "✓ Selected" : "Choose"}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <section className="form-section preview-section">
-              <div className="form-section-heading">
-                <span className="form-icon">04</span>
-                <div>
-                  <h2>Live Preview</h2>
-                  <p>Your portfolio updates as you type.</p>
-                </div>
-              </div>
-              <PortfolioPreview item={form} />
-            </section>
-
-            <div className="form-actions">
-              <button type="button" className="btn btn-muted"
-                onClick={() => setPage("home")}>Cancel</button>
-              <button type="submit" className="btn btn-primary">
-                {editingId ? "✓ Update Portfolio" : "♡ Save Portfolio"}
-              </button>
-            </div>
-          </form>
-        </main>
-      )}
-
-      {page === "manage" && (
-        <main className="page-content manage-page">
-          <div className="page-heading">
-            <span className="eyebrow">YOUR CREATIONS</span>
-            <h1>Manage Portfolios</h1>
-            <p>View, edit, and manage your saved portfolio designs.</p>
-          </div>
-
-          {selectedPortfolio ? (
-            <section className="saved-detail">
-              <div className="detail-toolbar">
-                <button className="btn btn-muted" onClick={() => setSelectedId(null)}>
-                  ← All Portfolios
-                </button>
-                <div className="detail-actions">
-                  <button className="btn btn-outline"
-                    onClick={() => editPortfolio(selectedPortfolio)}>✎ Edit</button>
-                  <button className="btn btn-primary"
-                    onClick={() => window.print()}>↓ Print / Save PDF</button>
-                </div>
-              </div>
-              <PortfolioPreview item={selectedPortfolio} />
-            </section>
-          ) : portfolios.length === 0 ? (
-            <section className="empty-state">
-              <div className="empty-illustration">✿</div>
-              <h2>Your story starts here</h2>
-              <p>You haven't saved any portfolios yet. Create your first one!</p>
-              <button className="btn btn-primary" onClick={() => startCreating()}>
-                + Create My First Portfolio
-              </button>
-            </section>
-          ) : (
-            <>
-              <div className="manage-summary">
-                <div>
-                  <span className="summary-number">{portfolios.length}</span>
-                  <span className="summary-label">
-                    {portfolios.length === 1 ? "saved portfolio" : "saved portfolios"}
-                  </span>
-                </div>
-                <button className="btn btn-primary" onClick={() => startCreating()}>
-                  + New Portfolio
-                </button>
-              </div>
-
-              <div className="saved-grid">
-                {portfolios.map((portfolio) => (
-                  <article className="saved-card" key={portfolio.id}>
-                    <button className="saved-card-preview"
-                      onClick={() => setSelectedId(portfolio.id)}
-                      aria-label={`View ${portfolio.name}'s portfolio`}>
-                      <PortfolioPreview item={portfolio} />
-                      <span className="saved-view-overlay">View Portfolio ↗</span>
-                    </button>
-                    <div className="saved-card-info">
+                {selectedPortfolio && (
+                  <section className="saved-detail">
+                    <div className="saved-detail-heading">
                       <div>
-                        <h3>{portfolio.name}</h3>
-                        <p>{portfolio.title}</p>
-                        <span className="saved-template-label">
-                          {templates.find((t) => t.id === portfolio.template)?.name || "Simple"} template
-                        </span>
+                        <span className="eyebrow">PORTFOLIO DETAILS</span>
+                        <h2>{selectedPortfolio.name}</h2>
                       </div>
-                      <div className="saved-card-actions">
-                        <button className="icon-action" title="Edit"
-                          aria-label="Edit portfolio"
-                          onClick={() => editPortfolio(portfolio)}>✎</button>
-                        <button className="icon-action delete-action" title="Delete"
-                          aria-label="Delete portfolio"
-                          onClick={() => deletePortfolio(portfolio.id)}>×</button>
-                      </div>
+                      <button
+                        type="button"
+                        className="secondary-button"
+                        onClick={() => window.print()}
+                      >
+                        Print / PDF
+                      </button>
                     </div>
-                  </article>
-                ))}
+                    <PortfolioPreview item={selectedPortfolio} />
+                  </section>
+                )}
               </div>
-            </>
-          )}
-        </main>
-      )}
+            )}
+          </section>
+        )}
+      </main>
 
       <footer className="app-footer">
-        <button className="footer-brand" onClick={() => setPage("home")}>
-          <span className="brand-logo">P</span>
-          <span><span className="brand-purple">Portfolio</span><span className="brand-pink">Forge</span></span>
-        </button>
-        <p>Made with ♡ to help you show your best self.</p>
-        <span className="footer-note">Your skills. Your story. Your style.</span>
+        <span className="brand-icon footer-brand-icon">P</span>
+        <span>PortfolioForge</span>
+        <span className="footer-note">Build your story, one section at a time.</span>
       </footer>
     </div>
+  );
+}
+
+function TemplateThumbnail({ template }) {
+  return (
+    <span className={`template-thumb thumb-${template}`}>
+      <span className="thumb-header">
+        <span className="thumb-avatar" />
+        <span className="thumb-heading-lines">
+          <span />
+          <span />
+        </span>
+      </span>
+      <span className="thumb-content">
+        <span />
+        <span />
+        <span />
+        <span />
+      </span>
+    </span>
   );
 }
 
