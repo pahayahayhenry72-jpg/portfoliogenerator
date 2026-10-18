@@ -9,7 +9,8 @@ A web-based application that allows users to create, customize, preview, and man
 - **Project Code:** WST21-PM-2026-SF
 - **Project Name:** Portfolio Template Generator
 - **Group #:** GROUP 4
-- **Group Members:** (GADINGAN, JUDY ANN
+- **Group Members:**
+-                    (GADINGAN, JUDY ANN
 -                     NAVARRA, LUIGE
 -                     NARVASA, KYLE
 -                     ORTEGA, JOEL
