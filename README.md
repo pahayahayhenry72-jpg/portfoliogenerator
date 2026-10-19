@@ -15,7 +15,7 @@ A web-based application that allows users to create, customize, preview, and man
 -                     NARVASA, KYLE
 -                     ORTEGA, JOEL
 -                     PAHAYAHAY, HENRY
--                     VILLIONA, KENT BERNARD)
+-                     VILLONA, KENT BERNARD)
 - **Course & Year:** BSIT – [2ND YEAR]
 - **Frontend:** React.js, HTML, CSS, JavaScript
 - **Build Tool:** Vite
