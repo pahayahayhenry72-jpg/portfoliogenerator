@@ -1743,3 +1743,237 @@ button:disabled {
     break-inside: avoid;
   }
 }
+
+/* ===== PORTFOLIO PROFILE LAYOUT FIX ===== */
+
+.portfolio-preview .preview-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 10px 30px;
+  text-align: center;
+}
+
+.portfolio-preview .preview-profile-picture {
+  display: block;
+  width: 115px;
+  height: 115px;
+  flex: 0 0 115px;
+  margin: 0 auto 8px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.portfolio-preview .preview-header h1 {
+  margin: 5px 0;
+  overflow-wrap: anywhere;
+}
+
+.portfolio-preview .preview-header h2 {
+  margin: 0 0 10px;
+}
+
+.portfolio-preview .preview-header p {
+  margin: 5px 0;
+  overflow-wrap: anywhere;
+}
+
+/* Organize About Me, Skills, Education, Projects,
+   Work Experience, and other sections */
+
+.portfolio-preview .preview-section {
+  display: block;
+  width: 100%;
+  padding: 24px 0;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.portfolio-preview .preview-section h3 {
+  margin-bottom: 12px;
+}
+
+.portfolio-preview .preview-section ul {
+  padding-left: 22px;
+}
+
+.portfolio-preview .preview-skills {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.portfolio-preview .preview-skills span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* Simple template */
+
+.preview-simple .preview-header {
+  border-bottom: 2px solid #315f91;
+}
+
+/* Modern template */
+
+.preview-modern .preview-header {
+  border-bottom: 2px solid #65d9c4;
+}
+
+/* Creative template */
+
+.preview-creative .preview-header {
+  border-bottom: 2px solid #c46e3c;
+}
+
+/* Mobile responsive */
+
+@media (max-width: 650px) {
+  .portfolio-preview {
+    width: 100%;
+    padding: 20px 15px;
+  }
+
+  .portfolio-preview .preview-header {
+    gap: 10px;
+    padding: 8px 0 24px;
+  }
+
+  .portfolio-preview .preview-profile-picture {
+    width: 95px;
+    height: 95px;
+    flex-basis: 95px;
+  }
+
+  .portfolio-preview .preview-header h1 {
+    font-size: 27px;
+  }
+
+  .portfolio-preview .preview-header h2 {
+    font-size: 15px;
+  }
+
+  .portfolio-preview .preview-section {
+    padding: 19px 0;
+  }
+
+  .portfolio-preview .preview-skills {
+    gap: 8px;
+  }
+}
+
+/* Print layout */
+
+@media print {
+  .portfolio-preview .preview-header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .portfolio-preview .preview-profile-picture {
+    border-radius: 50%;
+  }
+}
+
+/* Supabase login and signup */
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top left, #e9ddff, transparent 45%),
+    linear-gradient(135deg, #f8f5ff, #edf3ff);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 430px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 36px;
+  background: #ffffff;
+  border: 1px solid #e7ddf8;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(70, 45, 120, 0.12);
+}
+
+.auth-card h1 {
+  margin: 0;
+  text-align: center;
+  color: #6538b5;
+  font-size: 30px;
+}
+
+.auth-flower {
+  text-align: center;
+  font-size: 42px;
+  color: #8756d9;
+}
+
+.auth-subtitle {
+  margin: 0 0 8px;
+  text-align: center;
+  line-height: 1.6;
+  color: #777087;
+}
+
+.auth-submit {
+  width: 100%;
+  justify-content: center;
+}
+
+.auth-switch {
+  margin: 0;
+  text-align: center;
+  color: #716a80;
+  font-size: 14px;
+}
+
+.auth-switch button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #7545c4;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.auth-card input {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.signed-in-note {
+  padding: 8px 20px;
+  text-align: right;
+  color: #756987;
+  font-size: 13px;
+}
+
+.auth-card .notice {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  .auth-card {
+    padding: 24px;
+  }
+
+  .signed-in-note {
+    text-align: center;
+  }
+}
