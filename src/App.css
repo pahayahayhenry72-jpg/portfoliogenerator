@@ -1977,3 +1977,117 @@ button:disabled {
     text-align: center;
   }
 }
+
+
+/* ===== DISTINCT PORTFOLIO TEMPLATE LAYOUTS ===== */
+
+/* Simple: classic, left-aligned professional resume */
+.portfolio-preview.preview-simple .preview-header {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 10px 0 28px;
+}
+.portfolio-preview.preview-simple .preview-profile-picture {
+  border-radius: 12px;
+}
+.portfolio-preview.preview-simple .preview-section {
+  padding: 18px 0;
+}
+
+/* Modern: dark teal design with card-like sections */
+.portfolio-preview.preview-modern {
+  padding: clamp(22px, 4vw, 44px);
+  border-radius: 24px;
+}
+.portfolio-preview.preview-modern .preview-header {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 24px;
+  margin: -10px -10px 24px;
+  border: 1px solid #345257;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #203c42, #17282d);
+}
+.portfolio-preview.preview-modern .preview-profile-picture {
+  border: 3px solid #65d9c4;
+  border-radius: 50%;
+}
+.portfolio-preview.preview-modern .preview-section {
+  padding: 20px;
+  margin: 14px 0;
+  border: 1px solid #345257;
+  border-radius: 14px;
+  background: #1d3338;
+}
+.portfolio-preview.preview-modern .preview-section h3 {
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 13px;
+}
+.portfolio-preview.preview-modern .preview-footer {
+  padding: 20px;
+}
+
+/* Creative: asymmetrical purple/orange editorial style */
+.portfolio-preview.preview-creative {
+  border-radius: 4px 28px 4px 28px;
+  padding: clamp(22px, 5vw, 52px);
+}
+.portfolio-preview.preview-creative .preview-header {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 24px;
+  margin: -10px -10px 18px;
+  border: 0;
+  border-left: 8px solid #f0a05b;
+  background: linear-gradient(115deg, #f3e4ff, #fff3e6);
+}
+.portfolio-preview.preview-creative .preview-profile-picture {
+  border-radius: 8px 24px 8px 24px;
+  border: 3px solid #f0a05b;
+}
+.portfolio-preview.preview-creative .preview-label {
+  letter-spacing: 3px;
+}
+.portfolio-preview.preview-creative .preview-section {
+  padding: 20px 16px;
+  margin: 12px 0;
+  border: 0;
+  border-bottom: 2px dashed #dfc4f0;
+}
+.portfolio-preview.preview-creative .preview-section h3 {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 3px 10px 3px 10px;
+  background: #f0e2ff;
+}
+
+/* Print the selected portfolio, not the hidden builder panel */
+@media print {
+  .workflow-panel:has(.portfolio-preview) {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+
+  .workflow-panel:has(.portfolio-preview) > *:not(.portfolio-preview) {
+    display: none !important;
+  }
+
+  .portfolio-preview.preview-modern {
+    background: #17282d !important;
+  }
+  .portfolio-preview.preview-creative {
+    background: #fffaf5 !important;
+  }
+}
